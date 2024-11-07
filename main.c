@@ -24,7 +24,12 @@ int main() {
     while(fgets(line_buf, BUFF_SIZE, input) != NULL) {
         // REMOVE LATER
         printf("%s", line_buf);
-     
+        
+        // PARSE HERE
+        
+        // ...
+
+        //
     }
 
     return 0;
