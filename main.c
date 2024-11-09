@@ -1,5 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include "header.h"
 
 #define BUFF_SIZE 10000
 
@@ -25,8 +24,7 @@ int main() {
     while(fgets(line_buf, BUFF_SIZE, input) != NULL) {
         // REMOVE LATER
         
-	printf("%s", line_buf);
-        // PARSE HERE
+        tokenize_string(line_buf, &analyze);
         
         //
     }
