@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+
 #define BUFF_SIZE 10000
 
 // Framework by which to read an input file in C for lexer project
@@ -23,14 +24,10 @@ int main() {
     // Loop line by line
     while(fgets(line_buf, BUFF_SIZE, input) != NULL) {
         // REMOVE LATER
-        printf("%s", line_buf);
         
+	printf("%s", line_buf);
         // PARSE HERE
         
-        // ...
-
         //
     }
-
-    return 0;
 }
