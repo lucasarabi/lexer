@@ -1,5 +1,7 @@
 #include "header.h"
 
-void analyze(void *token) {
-    printf("%s\n", token);
+void analyze(char *line) {
+    for(int i = 0; i < strlen(line); i++) {
+        printf("%c\n", line[i]);
+    }
 }

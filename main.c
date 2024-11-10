@@ -22,10 +22,6 @@ int main() {
     
     // Loop line by line
     while(fgets(line_buf, BUFF_SIZE, input) != NULL) {
-        // REMOVE LATER
-        
         tokenize_string(line_buf, &analyze);
-        
-        //
     }
 }

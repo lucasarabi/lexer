@@ -2,5 +2,5 @@
 #include <stdlib.h>
 #include <string.h>
 
-void tokenize_string(char *line, void (*function)(void*));
-void analyze(char *token);
+void analyze(char *line);
+void tokenize_string(char *line, void(*function)(char*));
