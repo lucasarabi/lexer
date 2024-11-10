@@ -2,48 +2,46 @@ import tkinter as tk
 from tkinter import filedialog
 import subprocess
 
-# Function to call the C program when the button is clicked
+# gui that runs c program for lexer
 def run_lexer():
-    # Open a file dialog to select a file
-    file_path = filedialog.askopenfilename(title="Select a file", filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
+    # select file
+    file_path = filedialog.askopenfilename(title="Select a file", filetypes=[("Text files", "*.txt")]) # , ("All files", "*.*") add back if more than .txt files are used for input
     
-    # Check if the user selected a file (file_path will be an empty string if cancelled)
     if file_path:
-        # Run the C program 'lexer' and pass the selected file as an argument
+        # run the compiled c program "wsl" is windows subsystem for linux, remove it if you are running on linux
         result = subprocess.run(["wsl", "./lexer", file_path], capture_output=True, text=True)
         
-        # Insert the output of the C program into the Text widget
-        output_text.delete(1.0, tk.END)  # Clear existing content
-        output_text.insert(tk.END, result.stdout)  # Insert new content
+        # takes console output of c program and prints it in gui
+        output_text.delete(1.0, tk.END)
+        output_text.insert(tk.END, result.stdout)
     else:
         output_text.delete(1.0, tk.END)
-        output_text.insert(tk.END, "No file selected.")
+        output_text.insert(tk.END, "No file selected. Select file below to run CLite Lexer.")
 
-# Create the main window
+# initialize gui
 root = tk.Tk()
 root.title("CLite Lexer")
+root.geometry("800x600")
 
-# Create a Frame to hold the Text widget and Scrollbar
+# frame that holds text and scrollbar
 frame = tk.Frame(root)
 frame.pack(padx=10, pady=10)
 
-# Create a Text widget for displaying multi-line output with a vertical scrollbar
-output_text = tk.Text(frame, width=50, height=10, wrap=tk.WORD)
-output_text.pack(side=tk.LEFT, fill=tk.Y)
+# multi line text box
+output_text = tk.Text(frame, wrap=tk.WORD)
+output_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-# Create a Scrollbar widget and link it to the Text widget
+# scrollbar
 scrollbar = tk.Scrollbar(frame, command=output_text.yview)
 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-
-# Configure the Text widget to use the scrollbar
 output_text.config(yscrollcommand=scrollbar.set)
 
-# Insert initial message
+# initial message
 output_text.insert(tk.END, "Select file below to run CLite Lexer.")
 
-# Create a button and associate it with the run_lexer function
+# button to run the lexer after selecting a file
 button = tk.Button(root, text="Select File", command=run_lexer)
 button.pack(pady=10)
 
-# Start the Tkinter event loop
+# loop
 root.mainloop()
