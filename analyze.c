@@ -34,10 +34,10 @@ void kill_entry(entry *my_entry) {
 
 const char* token_type_to_string(TokenType type) {
     switch (type) {
-        case TOKEN_INT: return "TOKEN_INT";
-        case TOKEN_BOOL: return "TOKEN_BOOL";
-        case TOKEN_FLOAT: return "TOKEN_FLOAT";
-        case TOKEN_CHAR: return "TOKEN_CHAR";
+        case TOKEN_TYPE_INT: return "TOKEN_TYPE_INT";
+        case TOKEN_TYPE_BOOL: return "TOKEN_TYPE_BOOL";
+        case TOKEN_TYPE_FLOAT: return "TOKEN_TYPE_FLOAT";
+        case TOKEN_TYPE_CHAR: return "TOKEN_TYPE_CHAR";
         case TOKEN_IF: return "TOKEN_IF";
         case TOKEN_ELSE: return "TOKEN_ELSE";
         case TOKEN_WHILE: return "TOKEN_WHILE";
@@ -58,10 +58,9 @@ const char* token_type_to_string(TokenType type) {
         case TOKEN_LOGICAL_AND: return "TOKEN_LOGICAL_AND";
         case TOKEN_PLUS: return "TOKEN_PLUS";
         case TOKEN_MINUS: return "TOKEN_MINUS";
-        case TOKEN_ASTERISK: return "TOKEN_ASTERISK";
-        case TOKEN_SLASH: return "TOKEN_SLASH";
-        case TOKEN_PERCENT: return "TOKEN_PERCENT";
-        case TOKEN_UNARY_MINUS: return "TOKEN_UNARY_MINUS";
+        case TOKEN_MULTIP: return "TOKEN_MULTIP";
+        case TOKEN_DIVIDE: return "TOKEN_DIVIDE";
+        case TOKEN_MODULUS: return "TOKEN_MODULUS";
         case TOKEN_LOGICAL_NOT: return "TOKEN_LOGICAL_NOT";
         case TOKEN_LPAREN: return "TOKEN_LPAREN";
         case TOKEN_RPAREN: return "TOKEN_RPAREN";
@@ -88,15 +87,220 @@ char* entry_to_string(const entry *e) {
     return result;
 }
 
-void analyze(args *arguments) {
+char* trim(char* str) {
+    // Trim leading spaces
+    while (isspace((unsigned char)*str)) {
+        str++;
+    }
+
+    // Trim trailing spaces
+    char *end = str + strlen(str) - 1;
+    while (end > str && isspace((unsigned char)*end)) {
+        end--;
+    }
+
+    // Null-terminate the string at the new end
+    *(end + 1) = '\0';
+
+    return str;
+}
+
+void analyze_single_char_tokens(args *arguments) {
     // Unpack arguments
     int line_num = arguments->line_num;
     char* token = arguments->token;
 
     // Write analysis here
+
     /*  BLUEPRINT FOR table_entry INTIALIZATION
     entry *table_entry = create_entry(token);
     init_entry(table_entry, line_num, TOKEN_UNKNOWN, token);
     printf("%s\n", entry_to_string(table_entry));
     */
+    
+    entry *table_entry = create_entry(token);
+    for(int i = 0; i < strlen(token); i++) {
+        // printf("%c\n", token[i]);
+        char str[2];
+        str[1] = '\0';
+        switch(token[i]) {
+            case '(':
+                str[0] = token[i];
+                init_entry(table_entry, line_num, TOKEN_LPAREN, str);
+                printf("%s\n", entry_to_string(table_entry));
+                token[i] = ' ';
+                break;
+            case ')':
+                str[0] = token[i];
+                init_entry(table_entry, line_num, TOKEN_RPAREN, str);
+                printf("%s\n", entry_to_string(table_entry));
+                token[i] = ' ';
+                break;
+            case '{':
+                str[0] = token[i];
+                init_entry(table_entry, line_num, TOKEN_LBRACE, str);
+                printf("%s\n", entry_to_string(table_entry));
+                token[i] = ' ';
+                break;
+            case '}':
+                str[0] = token[i];
+                init_entry(table_entry, line_num, TOKEN_RBRACE, str);
+                printf("%s\n", entry_to_string(table_entry));
+                token[i] = ' ';
+                break;
+            case '[':
+                str[0] = token[i];
+                init_entry(table_entry, line_num, TOKEN_LBRACKET, str);
+                printf("%s\n", entry_to_string(table_entry));
+                token[i] = ' ';
+                break; 
+            case ']':
+                str[0] = token[i];
+                init_entry(table_entry, line_num, TOKEN_RBRACKET, str);
+                printf("%s\n", entry_to_string(table_entry));
+                token[i] = ' ';
+                break;
+            case ';':
+                str[0] = token[i];
+                init_entry(table_entry, line_num, TOKEN_SEMICOLON, str);
+                printf("%s\n", entry_to_string(table_entry));
+                token[i] = ' ';
+                break;  
+            case ',':
+                str[0] = token[i];
+                init_entry(table_entry, line_num, TOKEN_COMMA, str);
+                printf("%s\n", entry_to_string(table_entry));
+                token[i] = ' ';
+                break;
+            case '=':
+                if(token[i+1] == '=' || token[i-1] == '=' || token[i-1] == '>' || token[i-1] == '<' || token[i-1] == '!') break;
+                str[0] = token[i];
+                init_entry(table_entry, line_num, TOKEN_EQUAL, str);
+                printf("%s\n", entry_to_string(table_entry));
+                token[i] = ' ';
+                break;
+            case '<':
+                if(token[i+1] == '=') break;
+                str[0] = token[i];
+                init_entry(table_entry, line_num, TOKEN_LESS_THAN, str);
+                printf("%s\n", entry_to_string(table_entry));
+                token[i] = ' ';
+                break;
+            case '>':
+                if(token[i+1] == '=') break;
+                str[0] = token[i];
+                init_entry(table_entry, line_num, TOKEN_GREATER_THAN, str);
+                printf("%s\n", entry_to_string(table_entry));
+                token[i] = ' ';
+                break;
+            case '+':
+                str[0] = token[i];
+                init_entry(table_entry, line_num, TOKEN_PLUS, str);
+                printf("%s\n", entry_to_string(table_entry));
+                token[i] = ' ';
+                break;
+            case '-':
+                str[0] = token[i];
+                init_entry(table_entry, line_num, TOKEN_MINUS, str);
+                printf("%s\n", entry_to_string(table_entry));
+                token[i] = ' ';
+                break;
+            case '*':
+                str[0] = token[i];
+                init_entry(table_entry, line_num, TOKEN_MULTIP, str);
+                printf("%s\n", entry_to_string(table_entry));
+                token[i] = ' ';
+                break;
+            case '/':
+                if(token[i+1] == '/' || token[i-1] == '/') break;
+                str[0] = token[i];
+                init_entry(table_entry, line_num, TOKEN_DIVIDE, str);
+                printf("%s\n", entry_to_string(table_entry));
+                token[i] = ' ';
+                break;
+            case '%':
+                str[0] = token[i];
+                init_entry(table_entry, line_num, TOKEN_MODULUS, str);
+                printf("%s\n", entry_to_string(table_entry));
+                token[i] = ' ';
+                break;
+            case '!':
+                if(token[i+1] == '=') break;
+                str[0] = token[i];
+                init_entry(table_entry, line_num, TOKEN_LOGICAL_NOT, str);
+                printf("%s\n", entry_to_string(table_entry));
+                token[i] = ' ';
+                break;
+        }  
+    }
+    
+    token = trim(token);
+    //
+    // Find a way to split lines that only got separated in the switch case
+    //
+    printf("%s\n", token);
+    if(strcmp(token, "int") == 0) {
+        init_entry(table_entry, line_num, TOKEN_TYPE_INT, token);
+        printf("%s\n", entry_to_string(table_entry));
+    }
+    else if(strcmp(token, "bool") == 0) {
+        init_entry(table_entry, line_num, TOKEN_TYPE_BOOL, token);
+        printf("%s\n", entry_to_string(table_entry));
+    }
+    else if(strcmp(token, "float") == 0) {
+        init_entry(table_entry, line_num, TOKEN_TYPE_FLOAT, token);
+        printf("%s\n", entry_to_string(table_entry));
+    }
+    else if(strcmp(token, "char") == 0) {
+        init_entry(table_entry, line_num, TOKEN_TYPE_CHAR, token);
+        printf("%s\n", entry_to_string(table_entry));
+    }
+    else if(strcmp(token, "if") == 0) {
+        init_entry(table_entry, line_num, TOKEN_IF, token);
+        printf("%s\n", entry_to_string(table_entry));
+    }
+    else if(strcmp(token, "else") == 0) {
+        init_entry(table_entry, line_num, TOKEN_ELSE, token);
+        printf("%s\n", entry_to_string(table_entry));
+    }
+    else if(strcmp(token, "while") == 0) {
+        init_entry(table_entry, line_num, TOKEN_WHILE, token);
+        printf("%s\n", entry_to_string(table_entry));
+    }
+    else if(strcmp(token, "main") == 0) {
+        init_entry(table_entry, line_num, TOKEN_MAIN, token);
+        printf("%s\n", entry_to_string(table_entry));
+    }
+    else if(strcmp(token, "true") == 0) {
+        init_entry(table_entry, line_num, TOKEN_BOOLEAN_LITERAL, token);
+        printf("%s\n", entry_to_string(table_entry));
+    }
+    else if(strcmp(token, "false") == 0) {
+        init_entry(table_entry, line_num, TOKEN_BOOLEAN_LITERAL, token);
+        printf("%s\n", entry_to_string(table_entry));
+    }
+    else if(strcmp(token, "==") == 0) {
+        init_entry(table_entry, line_num, TOKEN_EQUAL, token);
+        printf("%s\n", entry_to_string(table_entry));
+    }
+    else if(strcmp(token, "!=") == 0) {
+        init_entry(table_entry, line_num, TOKEN_NOT_EQUAL, token);
+        printf("%s\n", entry_to_string(table_entry));
+    }
+    else if(strcmp(token, "<=") == 0) {
+        init_entry(table_entry, line_num, TOKEN_LESS_EQUAL, token);
+        printf("%s\n", entry_to_string(table_entry));
+    }
+    else if(strcmp(token, ">=") == 0) {
+        init_entry(table_entry, line_num, TOKEN_GREATER_EQUAL, token);
+        printf("%s\n", entry_to_string(table_entry));
+    }
+    else if(strcmp(token, "||") == 0) {
+        init_entry(table_entry, line_num, TOKEN_LOGICAL_OR, token);
+        printf("%s\n", entry_to_string(table_entry));
+    }
+    else if(strcmp(token, "&&") == 0) {
+        init_entry(table_entry, line_num, TOKEN_LOGICAL_AND, token);
+        printf("%s\n", entry_to_string(table_entry));
+    }
 }

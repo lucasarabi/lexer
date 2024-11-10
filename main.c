@@ -20,7 +20,7 @@ int main() {
     
     int line_num = 1;
     while(fgets(line_buf, BUFF_SIZE, input) != NULL) {
-        tokenize_string(line_buf, line_num, &analyze);
+        tokenize_string(line_buf, line_num, &analyze_single_char_tokens);
         line_num++;
     }
 }
