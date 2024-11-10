@@ -25,7 +25,7 @@ root.geometry("800x600")
 
 # frame that holds text and scrollbar
 frame = tk.Frame(root)
-frame.pack(padx=10, pady=10)
+frame.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
 
 # multi line text box
 output_text = tk.Text(frame, wrap=tk.WORD)
