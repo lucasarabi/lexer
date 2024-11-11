@@ -1,0 +1,8 @@
+int main () {
+    int x=3;
+    //x=4;
+    /*
+    float y=6.5; //this shouldnt be printed
+    */
+    return;
+}
