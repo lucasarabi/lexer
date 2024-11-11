@@ -9,8 +9,12 @@
 // Lucas Arabi
 //
 
-int main() {
-    FILE *input = fopen("file_dir/input_file.txt", "r");
+int main(int argc, char** argv) {
+    if(argc != 2) {
+        fprintf(stderr, "Error: File not found\n");
+        exit(EXIT_FAILURE);
+    }
+    FILE *input = fopen(argv[1], "r");
     if(input == NULL) {
         fprintf(stderr, "Error: File not found\n");
         exit(EXIT_FAILURE);
