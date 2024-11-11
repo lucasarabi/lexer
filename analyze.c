@@ -347,7 +347,6 @@ void analyze_single_char_tokens(args *arguments) {
     else {
         subtoken = strtok(token, " \t");
         while(subtoken != NULL) {
-            printf("%s\n", subtoken);
             if(strcmp(subtoken, "int") == 0) {
                 init_entry(table_entry, line_num, TOKEN_TYPE_INT, subtoken);
                 printf("%s\n", entry_to_string(table_entry));
