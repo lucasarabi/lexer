@@ -17,10 +17,13 @@ int main() {
     }
     
     char *line_buf = (char*)malloc(BUFF_SIZE);
-    
+    int block_comment_state = 0;
     int line_num = 1;
+
     while(fgets(line_buf, BUFF_SIZE, input) != NULL) {
-        tokenize_string(line_buf, line_num, &analyze_single_char_tokens);
+        char *comment_start = strstr(line_buf, "//");
+        if (comment_start != NULL) *comment_start = '\0';
+        tokenize_string(&block_comment_state, line_buf, line_num, &analyze);
         line_num++;
     }
 }

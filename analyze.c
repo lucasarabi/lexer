@@ -130,7 +130,7 @@ int matches_regex(const char *string, const char *pattern) {
     return result == 0;
 }
 
-void analyze_single_char_tokens(args *arguments) {
+void analyze(args *arguments) {
     // Unpack arguments
     int line_num = arguments->line_num;
     char* token = arguments->token;

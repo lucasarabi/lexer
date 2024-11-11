@@ -1,33 +1,9 @@
-int main() {
-    // Declarations
-    int x, y = 10, z[5];
-    bool flag = true;
-    float a = 1.5, b = 2.3;
-    char letter = 'A';
-
-    // Statement - Assignment
-    x = 5;
-    y = x + 10;
-    z[0] = y * 2;
-    flag = false;
-
-    // Statement - Block
-    {
-        int inner_var = 20;
-        inner_var = inner_var + x;
-    }
-
-    // Statement - IfStatement
-    if (x < y) {
-        a = b / 2.0;
-    } else {
-        b = a * 1.5;
-    }
-
-    // Statement - WhileStatement
-    while (x < 20) {
-        x = x + 1;
-    }
-
-    return 0;
-}
+hello world
+goodbye// world
+// ok
+this is a test
+gg/* this is part two of the test 
+lalalal
+hahah
+jajaja
+*/we are so back
