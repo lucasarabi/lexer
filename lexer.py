@@ -2,19 +2,29 @@ import tkinter as tk
 from tkinter import filedialog
 import subprocess
 import tkinter.font as tkfont
+import os
 
 # gui that runs c program for lexer
 def run_lexer():
-    # select file
     output_text.config(state=tk.NORMAL)
     
-    file_path = filedialog.askopenfilename(title="Select a file", filetypes=[("Text files", "*.txt")]) # , ("All files", "*.*") add back if more than .txt files are used for input
+    # select file
+    file_path = filedialog.askopenfilename(title="Select a file", filetypes=[("Text files", "*.txt")]) 
     
     if file_path:
-        # run the compiled c program "wsl" is windows subsystem for linux, remove it if you are running on linux
-        result = subprocess.run(["wsl", "./lexer", file_path], capture_output=True, text=True)
+        # get the current working directory
+        cwd = os.getcwd()
         
-        # takes console output of c program and prints it in gui
+        # Convert the absolute file path to a relative file path based on the current working directory
+        relative_path = os.path.relpath(file_path, cwd)
+        
+        # Print the relative path to the console for debugging (optional)
+        print(f"Relative file path: {relative_path}")
+        
+        # Run the compiled C program, passing the relative file path, works on linux with folders, not on windows
+        result = subprocess.run(["wsl", "./lexer", relative_path], capture_output=True, text=True)
+        
+        # takes console output of c program and prints it in the GUI
         output_text.delete(1.0, tk.END)
         output_text.insert(tk.END, result.stdout)
     else:
@@ -27,7 +37,7 @@ def run_lexer():
 root = tk.Tk()
 root.title("CLite Lexer")
 root.geometry("800x800")
-font_style = tkfont.Font(family="Comic Sans MS", size=18)
+font_style = tkfont.Font(family="System", size=18)
 
 # frame that holds text and scrollbar
 frame = tk.Frame(root)
