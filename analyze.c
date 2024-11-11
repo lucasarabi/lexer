@@ -105,6 +105,31 @@ char* trim(char* str) {
     return str;
 }
 
+// Regex patterns
+const char *identifier_regex = "^[a-zA-Z_][a-zA-Z0-9_]*$";
+const char *integer_regex = "^-?[0-9]+$";
+const char *float_regex = "^-?[0-9]*\.[0-9]+([eE][-+]?[0-9]+)?$";
+const char *char_regex = "^[\x00-\x7F]$";
+
+int matches_regex(const char *string, const char *pattern) {
+    regex_t regex;
+    int result;
+
+    // Compile the regular expression
+    if (regcomp(&regex, pattern, REG_EXTENDED) != 0) {
+        return 0; // Compilation failed
+    }
+
+    // Execute the regular expression
+    result = regexec(&regex, string, 0, NULL, 0);
+
+    // Free the compiled regular expression
+    regfree(&regex);
+
+    // Check if there was a match
+    return result == 0;
+}
+
 void analyze_single_char_tokens(args *arguments) {
     // Unpack arguments
     int line_num = arguments->line_num;
@@ -235,72 +260,175 @@ void analyze_single_char_tokens(args *arguments) {
     }
     
     token = trim(token);
-    //
-    // Find a way to split lines that only got separated in the switch case
-    //
-    printf("%s\n", token);
-    if(strcmp(token, "int") == 0) {
-        init_entry(table_entry, line_num, TOKEN_TYPE_INT, token);
-        printf("%s\n", entry_to_string(table_entry));
+    char *subtoken;
+
+    if(strchr(token, ' ') == NULL) {
+        if(strcmp(token, "int") == 0) {
+            init_entry(table_entry, line_num, TOKEN_TYPE_INT, token);
+            printf("%s\n", entry_to_string(table_entry));
+        }
+        else if(strcmp(token, "bool") == 0) {
+            init_entry(table_entry, line_num, TOKEN_TYPE_BOOL, token);
+            printf("%s\n", entry_to_string(table_entry));
+        }
+        else if(strcmp(token, "float") == 0) {
+            init_entry(table_entry, line_num, TOKEN_TYPE_FLOAT, token);
+            printf("%s\n", entry_to_string(table_entry));
+        }
+        else if(strcmp(token, "char") == 0) {
+            init_entry(table_entry, line_num, TOKEN_TYPE_CHAR, token);
+            printf("%s\n", entry_to_string(table_entry));
+        }
+        else if(strcmp(token, "if") == 0) {
+            init_entry(table_entry, line_num, TOKEN_IF, token);
+            printf("%s\n", entry_to_string(table_entry));
+        }
+        else if(strcmp(token, "else") == 0) {
+            init_entry(table_entry, line_num, TOKEN_ELSE, token);
+            printf("%s\n", entry_to_string(table_entry));
+        }
+        else if(strcmp(token, "while") == 0) {
+            init_entry(table_entry, line_num, TOKEN_WHILE, token);
+            printf("%s\n", entry_to_string(table_entry));
+        }
+        else if(strcmp(token, "main") == 0) {
+            init_entry(table_entry, line_num, TOKEN_MAIN, token);
+            printf("%s\n", entry_to_string(table_entry));
+        }
+        else if(strcmp(token, "true") == 0) {
+            init_entry(table_entry, line_num, TOKEN_BOOLEAN_LITERAL, token);
+            printf("%s\n", entry_to_string(table_entry));
+        }
+        else if(strcmp(token, "false") == 0) {
+            init_entry(table_entry, line_num, TOKEN_BOOLEAN_LITERAL, token);
+            printf("%s\n", entry_to_string(table_entry));
+        }
+        else if(strcmp(token, "==") == 0) {
+            init_entry(table_entry, line_num, TOKEN_EQUAL, token);
+            printf("%s\n", entry_to_string(table_entry));
+        }
+        else if(strcmp(token, "!=") == 0) {
+            init_entry(table_entry, line_num, TOKEN_NOT_EQUAL, token);
+            printf("%s\n", entry_to_string(table_entry));
+        }
+        else if(strcmp(token, "<=") == 0) {
+            init_entry(table_entry, line_num, TOKEN_LESS_EQUAL, token);
+            printf("%s\n", entry_to_string(table_entry));
+        }
+        else if(strcmp(token, ">=") == 0) {
+            init_entry(table_entry, line_num, TOKEN_GREATER_EQUAL, token);
+            printf("%s\n", entry_to_string(table_entry));
+        }
+        else if(strcmp(token, "||") == 0) {
+            init_entry(table_entry, line_num, TOKEN_LOGICAL_OR, token);
+            printf("%s\n", entry_to_string(table_entry));
+        }
+        else if(strcmp(token, "&&") == 0) {
+            init_entry(table_entry, line_num, TOKEN_LOGICAL_AND, token);
+            printf("%s\n", entry_to_string(table_entry));
+        }
+        else if(matches_regex(token, char_regex)) {
+            init_entry(table_entry, line_num, TOKEN_CHAR_LITERAL, token);
+            printf("%s\n", entry_to_string(table_entry));
+        }
+        else if(matches_regex(token, identifier_regex)) {
+            init_entry(table_entry, line_num, TOKEN_IDENTIFIER, token);
+            printf("%s\n", entry_to_string(table_entry));
+        }
+        else if(matches_regex(token, integer_regex)) {
+            init_entry(table_entry, line_num, TOKEN_INTEGER_LITERAL, token);
+            printf("%s\n", entry_to_string(table_entry));
+        }
+        else if(matches_regex(token, float_regex)) {
+            init_entry(table_entry, line_num, TOKEN_FLOAT_LITERAL, token);
+            printf("%s\n", entry_to_string(table_entry));
+        }
     }
-    else if(strcmp(token, "bool") == 0) {
-        init_entry(table_entry, line_num, TOKEN_TYPE_BOOL, token);
-        printf("%s\n", entry_to_string(table_entry));
-    }
-    else if(strcmp(token, "float") == 0) {
-        init_entry(table_entry, line_num, TOKEN_TYPE_FLOAT, token);
-        printf("%s\n", entry_to_string(table_entry));
-    }
-    else if(strcmp(token, "char") == 0) {
-        init_entry(table_entry, line_num, TOKEN_TYPE_CHAR, token);
-        printf("%s\n", entry_to_string(table_entry));
-    }
-    else if(strcmp(token, "if") == 0) {
-        init_entry(table_entry, line_num, TOKEN_IF, token);
-        printf("%s\n", entry_to_string(table_entry));
-    }
-    else if(strcmp(token, "else") == 0) {
-        init_entry(table_entry, line_num, TOKEN_ELSE, token);
-        printf("%s\n", entry_to_string(table_entry));
-    }
-    else if(strcmp(token, "while") == 0) {
-        init_entry(table_entry, line_num, TOKEN_WHILE, token);
-        printf("%s\n", entry_to_string(table_entry));
-    }
-    else if(strcmp(token, "main") == 0) {
-        init_entry(table_entry, line_num, TOKEN_MAIN, token);
-        printf("%s\n", entry_to_string(table_entry));
-    }
-    else if(strcmp(token, "true") == 0) {
-        init_entry(table_entry, line_num, TOKEN_BOOLEAN_LITERAL, token);
-        printf("%s\n", entry_to_string(table_entry));
-    }
-    else if(strcmp(token, "false") == 0) {
-        init_entry(table_entry, line_num, TOKEN_BOOLEAN_LITERAL, token);
-        printf("%s\n", entry_to_string(table_entry));
-    }
-    else if(strcmp(token, "==") == 0) {
-        init_entry(table_entry, line_num, TOKEN_EQUAL, token);
-        printf("%s\n", entry_to_string(table_entry));
-    }
-    else if(strcmp(token, "!=") == 0) {
-        init_entry(table_entry, line_num, TOKEN_NOT_EQUAL, token);
-        printf("%s\n", entry_to_string(table_entry));
-    }
-    else if(strcmp(token, "<=") == 0) {
-        init_entry(table_entry, line_num, TOKEN_LESS_EQUAL, token);
-        printf("%s\n", entry_to_string(table_entry));
-    }
-    else if(strcmp(token, ">=") == 0) {
-        init_entry(table_entry, line_num, TOKEN_GREATER_EQUAL, token);
-        printf("%s\n", entry_to_string(table_entry));
-    }
-    else if(strcmp(token, "||") == 0) {
-        init_entry(table_entry, line_num, TOKEN_LOGICAL_OR, token);
-        printf("%s\n", entry_to_string(table_entry));
-    }
-    else if(strcmp(token, "&&") == 0) {
-        init_entry(table_entry, line_num, TOKEN_LOGICAL_AND, token);
-        printf("%s\n", entry_to_string(table_entry));
+    else {
+        subtoken = strtok(token, " \t");
+        while(subtoken != NULL) {
+            printf("%s\n", subtoken);
+            if(strcmp(subtoken, "int") == 0) {
+                init_entry(table_entry, line_num, TOKEN_TYPE_INT, subtoken);
+                printf("%s\n", entry_to_string(table_entry));
+            }
+            else if(strcmp(subtoken, "bool") == 0) {
+                init_entry(table_entry, line_num, TOKEN_TYPE_BOOL, subtoken);
+                printf("%s\n", entry_to_string(table_entry));
+            }
+            else if(strcmp(subtoken, "float") == 0) {
+                init_entry(table_entry, line_num, TOKEN_TYPE_FLOAT, subtoken);
+                printf("%s\n", entry_to_string(table_entry));
+            }
+            else if(strcmp(subtoken, "char") == 0) {
+                init_entry(table_entry, line_num, TOKEN_TYPE_CHAR, subtoken);
+                printf("%s\n", entry_to_string(table_entry));
+            }
+            else if(strcmp(subtoken, "if") == 0) {
+                init_entry(table_entry, line_num, TOKEN_IF, subtoken);
+                printf("%s\n", entry_to_string(table_entry));
+            }
+            else if(strcmp(subtoken, "else") == 0) {
+                init_entry(table_entry, line_num, TOKEN_ELSE, subtoken);
+                printf("%s\n", entry_to_string(table_entry));
+            }
+            else if(strcmp(subtoken, "while") == 0) {
+                init_entry(table_entry, line_num, TOKEN_WHILE, subtoken);
+                printf("%s\n", entry_to_string(table_entry));
+            }
+            else if(strcmp(subtoken, "main") == 0) {
+                init_entry(table_entry, line_num, TOKEN_MAIN, subtoken);
+                printf("%s\n", entry_to_string(table_entry));
+            }
+            else if(strcmp(subtoken, "true") == 0) {
+                init_entry(table_entry, line_num, TOKEN_BOOLEAN_LITERAL, subtoken);
+                printf("%s\n", entry_to_string(table_entry));
+            }
+            else if(strcmp(subtoken, "false") == 0) {
+                init_entry(table_entry, line_num, TOKEN_BOOLEAN_LITERAL, subtoken);
+                printf("%s\n", entry_to_string(table_entry));
+            }
+            else if(strcmp(subtoken, "==") == 0) {
+                init_entry(table_entry, line_num, TOKEN_EQUAL, subtoken);
+                printf("%s\n", entry_to_string(table_entry));
+            }
+            else if(strcmp(subtoken, "!=") == 0) {
+                init_entry(table_entry, line_num, TOKEN_NOT_EQUAL, subtoken);
+                printf("%s\n", entry_to_string(table_entry));
+            }
+            else if(strcmp(subtoken, "<=") == 0) {
+                init_entry(table_entry, line_num, TOKEN_LESS_EQUAL, subtoken);
+                printf("%s\n", entry_to_string(table_entry));
+            }
+            else if(strcmp(subtoken, ">=") == 0) {
+                init_entry(table_entry, line_num, TOKEN_GREATER_EQUAL, subtoken);
+                printf("%s\n", entry_to_string(table_entry));
+            }
+            else if(strcmp(subtoken, "||") == 0) {
+                init_entry(table_entry, line_num, TOKEN_LOGICAL_OR, subtoken);
+                printf("%s\n", entry_to_string(table_entry));
+            }
+            else if(strcmp(subtoken, "&&") == 0) {
+                init_entry(table_entry, line_num, TOKEN_LOGICAL_AND, subtoken);
+                printf("%s\n", entry_to_string(table_entry));
+            }
+            else if(matches_regex(subtoken, char_regex)) {
+                init_entry(table_entry, line_num, TOKEN_CHAR_LITERAL, subtoken);
+                printf("%s\n", entry_to_string(table_entry));
+            }
+            else if(matches_regex(subtoken, identifier_regex)) {
+                init_entry(table_entry, line_num, TOKEN_IDENTIFIER, subtoken);
+                printf("%s\n", entry_to_string(table_entry));
+            }
+            else if(matches_regex(subtoken, integer_regex)) {
+                init_entry(table_entry, line_num, TOKEN_INTEGER_LITERAL, subtoken);
+                printf("%s\n", entry_to_string(table_entry));
+            }
+            else if(matches_regex(subtoken, float_regex)) {
+                init_entry(table_entry, line_num, TOKEN_FLOAT_LITERAL, subtoken);
+                printf("%s\n", entry_to_string(table_entry));
+            }
+            subtoken = strtok(NULL, " \t");
+        }
     }
 }
