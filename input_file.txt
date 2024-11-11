@@ -17,8 +17,10 @@ int main() {
         inner_var = inner_var + x;
     }
 
+    bool bool_var = (x == y)
+
     // Statement - IfStatement
-    if (x < y) {
+    if (x < y || x <= y) {
         a = b / 2.0;
     } else {
         b = a * 1.5;
